@@ -1,485 +1,1334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CloudEdge Agency — Demo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    :root{--bg:#071126;--card:#0f1b2b;--muted:#9fb0d6;--primary:#6C63FF;--accent:#00C2A8}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Poppins,system-ui,Arial;background:linear-gradient(180deg,#051025 0%,#071126 100%);color:#eaf2ff}
-    a{color:inherit}
-    .container{max-width:1100px;margin:0 auto;padding:20px}
-    header{position:sticky;top:0;background:rgba(4,12,24,.6);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.04)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 10px 30px rgba(108,99,255,.15)}
-    nav ul{display:flex;gap:14px;list-style:none;margin:0;padding:0}
-    nav a{padding:8px 12px;border-radius:10px;color:rgba(235,245,255,.9)}
-    nav a:hover{background:rgba(108,99,255,.08);transform:translateY(-2px)}
-    .actions{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--primary);border:0;padding:9px 12px;border-radius:10px;color:#fff;cursor:pointer}
-    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,.08)}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Edge Agency - Advanced Cloud Computing Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .upload-zone { border: 2px dashed #cbd5e0; transition: all 0.3s ease; }
+        .upload-zone.dragover { border-color: #667eea; background-color: #f7fafc; }
+        .progress-bar { transition: width 0.3s ease; }
+        .blog-card { transition: all 0.3s ease; }
+        .blog-card:hover { transform: translateY(-2px); }
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f59e0b; /* amber */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: bold;
+            animation: fadein 0.3s, fadeout 0.3s 2.7s;
+        }
 
-    /* Hero */
-    .hero{padding:36px 0}
-    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:start}
-    @media(max-width:980px){.hero-grid{grid-template-columns:1fr}}
-    .hero h1{font-size:34px;margin:6px 0;font-weight:600}
-    .hero p{color:var(--muted);margin:0 0 16px}
-    .stats{display:flex;gap:12px;margin-top:18px}
-    .stat{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.04);text-align:center;flex:1}
-    .stat b{display:block;font-size:20px}
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    /* Sections */
-    section{padding:28px 0}
-    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){.cards{grid-template-columns:1fr}}
-    .card{background:var(--card);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.04);box-shadow:0 12px 30px rgba(2,5,12,.6);cursor:pointer;transition:transform .18s}
-    .card:hover{transform:translateY(-6px)}
-    .card h4{margin:6px 0}
-    .muted{color:var(--muted);font-size:13px}
-
-    /* Insights */
-    #insightsTop{display:flex;gap:12px;align-items:center}
-    .ins-left{flex:1}
-    .ins-right{width:360px}
-
-    /* Contact */
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:640px){.form-row{grid-template-columns:1fr}}
-    input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);color:#eaf2ff}
-
-    /* Dashboard */
-    .dashboard{display:none;margin-top:18px}
-    .dash-grid{display:grid;grid-template-columns:260px 1fr;gap:14px}
-    @media(max-width:860px){.dash-grid{grid-template-columns:1fr}}
-    .aside{background:var(--card);padding:12px;border-radius:12px}
-    .panel{background:var(--card);padding:14px;border-radius:12px}
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.03);text-align:left}
-
-    /* Modal */
-    .modal{position:fixed;inset:0;background:rgba(2,6,12,.6);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal .box{width:100%;max-width:560px;background:#061429;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,.04)}
-
-    .right{margin-left:auto}
-    .hidden{display:none}
-
-    footer{padding:26px 0;color:var(--muted);text-align:center}
-  </style>
+        @keyframes fadeout {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <div style="font-weight:700">CloudEdge Agency</div>
-          <div class="muted" style="font-size:12px">End-to-end cloud & web solutions</div>
-        </div>
-      </div>
-      <nav>
-        <ul id="navLinks">
-          <li><a href="#home" data-scroll>Home</a></li>
-          <li><a href="#services" data-scroll>Services</a></li>
-          <li><a href="#insights" data-scroll>My Insights</a></li>
-          <li><a href="#contact" data-scroll>Contact</a></li>
-          <li><a href="#dashboard" data-scroll>Dashboard</a></li>
-        </ul>
-      </nav>
-      <div class="actions">
-        <button class="btn secondary" id="btnLogin">Login</button>
-        <button class="btn" id="btnGetStarted">Get Started</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <!-- Hero -->
-    <section class="hero" id="home">
-      <div class="hero-grid">
-        <div>
-          <h1>We build & host modern cloud-powered websites for businesses.</h1>
-          <p class="muted">CloudEdge Agency provides cloud consulting, web development & managed hosting — designed for reliability, security and scale.</p>
-          <div style="margin-top:12px" class="stats">
-            <div class="stat"><b id="viewStat">0</b><span class="muted">Total Views</span></div>
-            <div class="stat"><b id="itemsStat">0</b><span class="muted">Items Tracked</span></div>
-            <div class="stat"><b id="msgsStat">0</b><span class="muted">Messages</span></div>
-          </div>
-          <div style="margin-top:16px">
-            <button class="btn" id="btnExplore">Explore Services</button>
-            <button class="btn secondary" id="btnContact">Contact Us</button>
-          </div>
-        </div>
-        <div style="position:relative">
-          <div class="card" style="padding:14px">
-            <div style="font-weight:600">Quick Insights</div>
-            <div class="muted" style="font-size:13px;margin-top:6px">This dashboard shows live views & item-level metrics (unique by account/device).</div>
-            <canvas id="miniChart" style="width:100%;height:150px;margin-top:12px;background:transparent;border-radius:8px"></canvas>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Services -->
-    <section id="services">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3>Services</h3>
-        <div class="muted">Click any card to open details (views tracked)</div>
-      </div>
-      <div class="cards" id="servicesGrid"></div>
-    </section>
-
-    <!-- Insights -->
-    <section id="insights">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-        <div class="ins-left">
-          <h3>My Insights</h3>
-          <div class="muted">Detailed view counts and trends for services and projects. Views are unique per account/device.</div>
-          <div style="margin-top:12px" id="insSummary"></div>
-        </div>
-        <div class="ins-right">
-          <div class="card" style="padding:12px">
-            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:600">Views (7 days)</div><div><select id="insFilter"><option value="all">All</option><option value="services">Services</option><option value="projects">Projects</option></select></div></div>
-            <canvas id="insChart" style="width:100%;height:220px;margin-top:8px"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:14px">
-        <h4>Tracked Items (click to view)</h4>
-        <div class="cards" id="itemsGrid"></div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-        <h3>Contact Us</h3>
-        <div class="muted">Messages are saved locally. This demo opens your mail client to send mail to the agency's Gmail.</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 360px;gap:14px;margin-top:12px">
-        <div class="card">
-          <form id="contactForm">
-            <div class="form-row">
-              <input id="contactName" placeholder="Your name" required />
-              <input id="contactEmail" placeholder="Your email" required />
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-cloud text-3xl text-blue-600 mr-3"></i>
+                        <span class="text-2xl font-bold text-gray-900">Cloud Edge Agency</span>
+                    </div>
+                    <div class="hidden md:ml-10 md:flex md:space-x-8">
+                        <a href="#" id="homeTab" class="nav-link text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="#" id="blogTab" class="nav-link text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">Blog</a>
+                        <a href="#" id="insightsTab" class="nav-link text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">Insights</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="authButtons" class="flex space-x-4">
+                        <button id="loginBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </button>
+                        <button id="signupBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-user-plus mr-2"></i>Sign Up
+                        </button>
+                    </div>
+                    <div id="userMenu" class="hidden flex items-center space-x-4">
+                        <span id="userEmail" class="text-gray-700"></span>
+                        <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </div>
+                </div>
             </div>
-            <textarea id="contactMsg" rows="6" placeholder="Message (required)" required></textarea>
-            <div style="display:flex;gap:8px;align-items:center"><button class="btn" type="submit">Send Message</button><div class="muted">Or use email client</div></div>
-          </form>
         </div>
-        <div class="card">
-          <div style="font-weight:600">CloudEdge Agency</div>
-          <div class="muted" style="margin-top:6px">Email: <a href="mailto:sumitkumarprasad57@gmail.com">sumitkumarprasad57@gmail.com</a><br>Phone: +91 9766829168</div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div id="mainContent">
+        <!-- Home Section -->
+        <div id="homeSection" class="section-content">
+            <!-- Hero Section -->
+            <section class="gradient-bg text-white py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h1 class="text-5xl font-bold mb-6">Next-Generation Cloud & Edge Computing</h1>
+                    <p class="text-xl mb-8 max-w-3xl mx-auto">Harness the power of distributed computing with our cutting-edge cloud infrastructure and edge computing solutions. Scale globally, perform locally.</p>
+                    <button id="getStartedBtn" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>Get Started
+                    </button>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <!-- Services Grid -->
+                <section class="mb-16">
+                    <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Our Cloud Services</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-blue-600 text-4xl mb-4">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Cloud Infrastructure</h3>
+                            <p class="text-gray-600 mb-4">Scalable virtual machines, containers, and serverless computing solutions.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span class="text-sm">99.9% Uptime SLA</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-purple-600 text-4xl mb-4">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Edge Computing</h3>
+                            <p class="text-gray-600 mb-4">Ultra-low latency processing at the network edge for real-time applications.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-bolt mr-2"></i>
+                                <span class="text-sm">&lt;10ms Latency</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-green-600 text-4xl mb-4">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Data Analytics</h3>
+                            <p class="text-gray-600 mb-4">Advanced analytics and machine learning capabilities for your data.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-chart-line mr-2"></i>
+                                <span class="text-sm">Real-time Insights</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-red-600 text-4xl mb-4">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Security & Compliance</h3>
+                            <p class="text-gray-600 mb-4">Enterprise-grade security with compliance certifications.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-certificate mr-2"></i>
+                                <span class="text-sm">SOC 2 Certified</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-yellow-600 text-4xl mb-4">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">DevOps Integration</h3>
+                            <p class="text-gray-600 mb-4">Seamless CI/CD pipelines and infrastructure as code.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-sync mr-2"></i>
+                                <span class="text-sm">Automated Deployment</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                            <div class="text-indigo-600 text-4xl mb-4">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Global CDN</h3>
+                            <p class="text-gray-600 mb-4">Worldwide content delivery network for optimal performance.</p>
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span class="text-sm">200+ Edge Locations</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- File Upload Section -->
+                <section class="mb-16">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-900">
+                    <i class="fas fa-cloud-upload-alt mr-3 text-blue-600"></i>Secure File Upload
+                    </h2>
+                    <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/upload-image">
+                    <input type="file" name="image" accept="image/*" required />
+                    <button type="submit">Upload Image</button>
+                    </form>
+                    <div id="result"></div>
+                    <script>
+                    document.getElementById('uploadForm').onsubmit = async function (e) {
+                        e.preventDefault();
+                        const form = e.target;
+                        const data = new FormData(form);
+                        const res = await fetch('/upload-image', {
+                        method: 'POST',
+                        body: data
+                        });
+                        document.getElementById('result').innerText = await res.text();
+                    };
+                    </script>
+                </div>
+                </section>
+
+                <!-- Dashboard Preview -->
+                <section class="mb-16">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-900">
+                            <i class="fas fa-tachometer-alt mr-3 text-purple-600"></i>Performance Dashboard
+                        </h2>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-blue-100">Active Instances</p>
+                                        <p class="text-3xl font-bold">247</p>
+                                    </div>
+                                    <i class="fas fa-server text-3xl text-blue-200"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-green-100">Data Processed</p>
+                                        <p class="text-3xl font-bold">1.2TB</p>
+                                    </div>
+                                    <i class="fas fa-database text-3xl text-green-200"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-purple-100">Edge Nodes</p>
+                                        <p class="text-3xl font-bold">89</p>
+                                    </div>
+                                    <i class="fas fa-network-wired text-3xl text-purple-200"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-orange-100">Avg Latency</p>
+                                        <p class="text-3xl font-bold">8ms</p>
+                                    </div>
+                                    <i class="fas fa-bolt text-3xl text-orange-200"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-4">System Health</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700">CPU Usage</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">65%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700">Memory Usage</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 78%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">78%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700">Network I/O</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 42%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">42%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Dashboard -->
-    <section class="dashboard" id="dashboard">
-      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center"><h3>Admin Dashboard</h3><div class="muted">Manage items & view messages</div></div>
-      <div class="dash-grid">
-        <aside class="aside">
-          <div style="font-weight:600;margin-bottom:8px">Manage</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn secondary" id="dashOverview">Overview</button>
-            <button class="btn secondary" id="dashServices">Services</button>
-            <button class="btn secondary" id="dashProjects">Projects</button>
-            <button class="btn secondary" id="dashMsgs">Messages</button>
-            <button class="btn secondary" id="dashProfile">Profile</button>
-            <button class="btn" id="btnLogout">Logout</button>
-          </div>
-        </aside>
-        <div class="panel" id="dashPanel">
-          <!-- dynamic content -->
+        <!-- Blog Section -->
+        <div id="blogSection" class="section-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Blog Posts</h1>
+                    <button id="createBlogBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors font-semibold shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>Create Post
+                    </button>
+                </div>
+                
+                <div id="blogPosts" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Blog posts will be dynamically added here -->
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
 
-  </main>
+        <!-- Insights Section -->
+        <div id="insightsSection" class="section-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Analytics & Insights</h1>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600">Total Views</p>
+                                <p class="text-3xl font-bold text-blue-600" id="totalViews">0</p>
+                            </div>
+                            <i class="fas fa-eye text-3xl text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600">Blog Posts</p>
+                                <p class="text-3xl font-bold text-green-600" id="totalPosts">0</p>
+                            </div>
+                            <i class="fas fa-blog text-3xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600">Active Users</p>
+                                <p class="text-3xl font-bold text-purple-600" id="activeUsers">0</p>
+                            </div>
+                            <i class="fas fa-users text-3xl text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600">Avg. Views/Post</p>
+                                <p class="text-3xl font-bold text-orange-600" id="avgViews">0</p>
+                            </div>
+                            <i class="fas fa-chart-line text-3xl text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Modals -->
-  <div class="modal" id="authModal">
-    <div class="box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-weight:700">Login / Register</div><button class="btn secondary" id="closeAuth">Close</button></div>
-      <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn" id="showLogin">Login</button><button class="btn secondary" id="showRegister">Register</button></div>
-      <form id="loginForm">
-        <input id="loginEmail" placeholder="Email" required />
-        <input id="loginPass" type="password" placeholder="Password" required />
-        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Login</button><div class="muted right" id="loginStatus"></div></div>
-      </form>
-      <form id="registerForm" class="hidden">
-        <input id="regName" placeholder="Full name" required />
-        <input id="regEmail" placeholder="Email" required />
-        <input id="regPhone" placeholder="Phone" required />
-        <input id="regPass" type="password" placeholder="Password" required />
-        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Create Account</button><div class="muted right">Your account is saved locally (demo)</div></div>
-      </form>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Views Over Time</h3>
+                        <canvas id="viewsChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Popular Posts</h3>
+                        <div id="popularPosts" class="space-y-3">
+                            <!-- Popular posts will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="modal" id="itemModal">
-    <div class="box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div id="itemTitle" style="font-weight:700"></div><button class="btn secondary" data-close="itemModal">Close</button></div>
-      <div id="itemBody"></div>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-900">Login</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="authForm" class="space-y-4">
+                <div id="nameField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your full name">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your email" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your password" required>
+                </div>
+                
+                <div id="confirmPasswordField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Confirm your password">
+                </div>
+                
+                <button type="submit" id="authSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                    Login
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <button id="forgotPasswordBtn" class="text-blue-600 hover:text-blue-700 text-sm">Forgot Password?</button>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    <span id="switchText">Don't have an account?</span>
+                    <button id="switchMode" class="text-blue-600 hover:text-blue-700 font-medium ml-1">Sign up</button>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="modal" id="editModal">
-    <div class="box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div id="editTitle" style="font-weight:700">Edit Item</div><button class="btn secondary" data-close="editModal">Close</button></div>
-      <form id="editForm">
-        <input id="editType" hidden />
-        <input id="editId" hidden />
-        <input id="editTitleInput" placeholder="Title" required />
-        <input id="editImgInput" placeholder="Image URL (for projects)" />
-        <textarea id="editDescInput" rows="4" placeholder="Description"></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Save</button></div>
-      </form>
+    <!-- OTP Modal -->
+    <div id="otpModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 relative">
+            <div class="text-center mb-6">
+                <i class="fas fa-shield-alt text-4xl text-blue-600 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-900">Verify OTP</h3>
+                <p class="text-gray-600 mt-2">Enter the 6-digit code sent to your email</p>
+            </div>
+            
+            <form id="otpForm" class="space-y-4">
+                <div class="flex justify-center space-x-2">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <button type="submit" id="verifyOtpBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                    Verify OTP
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center space-x-4">
+                <button id="resendOtpBtn" class="text-blue-600 hover:text-blue-700 text-sm">Resend OTP</button>
+                <button id="cancelOtpBtn" class="text-gray-600 hover:text-gray-700 text-sm">Cancel</button>
+            </div>
+            
+            <button id="closeOtpModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    /************* STORAGE KEYS & SEED *************/
-    const KEYS = {users:'ce_users', session:'ce_session', services:'ce_services', projects:'ce_projects', messages:'ce_messages', insights:'ce_insights', device:'ce_device'};
+    <!-- Blog Modal -->
+    <div id="blogModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="blogModalTitle" class="text-2xl font-bold text-gray-900">Create Blog Post</h3>
+                <button id="closeBlogModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="blogForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                    <input type="text" id="blogTitle" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter blog title" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
+                    <div id="blogImageUpload" class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-500 transition-colors">
+                        <i class="fas fa-image text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-600">Click to upload image</p>
+                        <input type="file" id="blogImageInput" class="hidden" accept="image/*">
+                    </div>
+                    <div id="blogImagePreview" class="mt-4 hidden">
+                        <img id="previewImg" class="w-full h-48 object-cover rounded-lg">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <textarea id="blogContent" rows="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Write your blog content here..." required></textarea>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="submit" id="saveBlogBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Save Post
+                    </button>
+                    <button type="button" id="cancelBlogBtn" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    function seed(){
-      if(!localStorage.getItem(KEYS.device)) localStorage.setItem(KEYS.device, crypto.randomUUID());
-      if(!localStorage.getItem(KEYS.users)){
-        const admin = {name:'Sumit Kumar Prasad', email:'sumitkumarprasad57@gmail.com', phone:'+91 9766829168', password:'Admin@123', role:'admin', created:Date.now()};
-        localStorage.setItem(KEYS.users, JSON.stringify([admin]));
-      }
-      if(!localStorage.getItem(KEYS.services)){
-        const sv=[
-          {id:crypto.randomUUID(), title:'Cloud Consulting & Migration', desc:'Assessment and seamless AWS migration.', views:0, unique:[]},
-          {id:crypto.randomUUID(), title:'Web Development & Hosting', desc:'Responsive sites and CI/CD hosting.', views:0, unique:[]},
-          {id:crypto.randomUUID(), title:'Cybersecurity & Compliance', desc:'WAF, hardening and monitoring.', views:0, unique:[]}
-        ]; localStorage.setItem(KEYS.services, JSON.stringify(sv));
-      }
-      if(!localStorage.getItem(KEYS.projects)){
-        const pr=[
-          {id:crypto.randomUUID(), title:'Retail Cloud Migration', img:'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop', views:0, unique:[]},
-          {id:crypto.randomUUID(), title:'SaaS Landing Revamp', img:'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1400&auto=format&fit=crop', views:0, unique:[]}
-        ]; localStorage.setItem(KEYS.projects, JSON.stringify(pr));
-      }
-      if(!localStorage.getItem(KEYS.messages)) localStorage.setItem(KEYS.messages, JSON.stringify([]));
-      if(!localStorage.getItem(KEYS.insights)){
-        // daily buckets (last 7 days)
-        const daily=[]; const today=new Date(); for(let i=6;i>=0;i--){const d=new Date(today); d.setDate(today.getDate()-i); daily.push({date:d.toISOString().slice(0,10),count:0});}
-        localStorage.setItem(KEYS.insights, JSON.stringify({daily, total:0}));
-      }
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-cloud text-2xl text-blue-400 mr-2"></i>
+                        <span class="text-xl font-bold">Cloud Edge Agency</span>
+                    </div>
+                    <p class="text-gray-400">Leading the future of cloud and edge computing solutions.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Cloud Infrastructure</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Edge Computing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Data Analytics</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Cloud Edge Agency. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global state management
+        let currentUser = null;
+        let blogPosts = [];
+        let currentOtp = null;
+        let otpEmail = null;
+        let isEditingBlog = false;
+        let editingBlogId = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            renderBlogPosts();
+            updateInsights();
+            initializeCharts();
+        });
+
+        // Authentication functions
+        function checkAuthState() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserMenu();
+            }
+        }
+
+        function showUserMenu() {
+            document.getElementById('authButtons').classList.add('hidden');
+            document.getElementById('userMenu').classList.remove('hidden');
+            document.getElementById('userEmail').textContent = currentUser.email;
+        }
+
+        function hideUserMenu() {
+            document.getElementById('authButtons').classList.remove('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
+        }
+
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function sendOTPEmail(email, otp) {
+            fetch('/send-otp', {   
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) alert(`OTP sent to ${email}. Please check your inbox!`);
+                else alert('Failed to send OTP. Please try again.');
+                })
+                .catch(err => {
+                console.error(err);
+                alert('Error sending OTP. Make sure backend server is running.');
+            });
+        }
+
+
+        // Navigation
+        document.getElementById('homeTab').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSection('home');
+        });
+        document.getElementById('blogTab').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSection('blog');
+        });
+        document.getElementById('insightsTab').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSection('insights');
+        });
+
+        function switchSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-gray-900');
+                link.classList.add('text-gray-500');
+            });
+            
+            document.getElementById(section + 'Tab').classList.remove('text-gray-500');
+            document.getElementById(section + 'Tab').classList.add('text-gray-900');
+
+            if (section === 'insights') {
+                updateInsights();
+                updateCharts();
+            }
+        }
+
+        // Get Started button
+        document.getElementById('getStartedBtn').addEventListener('click', function() {
+            if (currentUser) {
+                switchSection('blog');
+            } else {
+                showModal(true);
+            }
+        });
+
+        // Authentication Modal Logic
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const authModal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const authForm = document.getElementById('authForm');
+        const authSubmit = document.getElementById('authSubmit');
+        const switchMode = document.getElementById('switchMode');
+        const switchText = document.getElementById('switchText');
+        const nameField = document.getElementById('nameField');
+        const confirmPasswordField = document.getElementById('confirmPasswordField');
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let isLoginMode = true;
+
+        function showModal(loginMode = true) {
+            isLoginMode = loginMode;
+            authModal.classList.remove('hidden');
+            authModal.classList.add('flex');
+            
+            if (loginMode) {
+                modalTitle.textContent = 'Login';
+                authSubmit.textContent = 'Login';
+                switchText.textContent = "Don't have an account?";
+                switchMode.textContent = 'Sign up';
+                nameField.classList.add('hidden');
+                confirmPasswordField.classList.add('hidden');
+                forgotPasswordBtn.classList.remove('hidden');
+            } else {
+                modalTitle.textContent = 'Sign Up';
+                authSubmit.textContent = 'Create Account';
+                switchText.textContent = 'Already have an account?';
+                switchMode.textContent = 'Login';
+                nameField.classList.remove('hidden');
+                confirmPasswordField.classList.remove('hidden');
+                forgotPasswordBtn.classList.add('hidden');
+            }
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.remove();
+            }, 3000);
+        }
+
+
+        function hideModal() {
+            authModal.classList.add('hidden');
+            authModal.classList.remove('flex');
+            authForm.reset();
+        }
+
+        loginBtn.addEventListener('click', () => showModal(true));
+        signupBtn.addEventListener('click', () => showModal(false));
+        closeModal.addEventListener('click', hideModal);
+        switchMode.addEventListener('click', () => showModal(!isLoginMode));
+
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) hideModal();
+        });
+
+        logoutBtn.addEventListener('click', function() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            hideUserMenu();
+            switchSection('home');
+        });
+
+        forgotPasswordBtn.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Please enter your email address first');
+                return;
+            }
+            
+            const user = users.find(u => u.email === email);
+            if (!user) {
+                alert('No account found with this email address');
+                return;
+            }
+            
+            otpEmail = email;
+            currentOtp = generateOTP();
+            sendOTPEmail(email, currentOtp);
+            hideModal();
+            showOtpModal();
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            authSubmit.textContent = 'Processing...';
+            authSubmit.disabled = true;
+
+            if (isLoginMode) {
+                // ---------------- LOGIN ----------------
+                fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        if (!data.user.verified) {
+                            alert('Your account is not verified. Please check your email for OTP.');
+                            return;
+                        }
+                        currentUser = data.user;
+                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+                        showUserMenu();
+                        hideModal();
+                        alert('Login successful!');
+                    } else {
+                        alert(data.message || 'Invalid email or password.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error during login.');
+                })
+                .finally(() => resetAuthButton());
+
+            } else {
+                // ---------------- SIGNUP ----------------
+                if (!fullName.trim()) {
+                    alert('Please enter your full name');
+                    return resetAuthButton();
+                }
+                if (!email.includes('@') || !email.includes('.')) {
+                    alert('Please enter a valid email address');
+                    return resetAuthButton();
+                }
+                if (password.length < 6) {
+                    alert('Password must be at least 6 characters long');
+                    return resetAuthButton();
+                }
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match. Please check and try again.');
+                    return resetAuthButton();
+                }
+
+                fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: fullName, email, password })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        otpEmail = email;  // store email for OTP verification
+                        alert('OTP sent to your email. Please verify.');
+                        hideModal();
+                        showOtpModal();   // open OTP modal
+                    } else {
+                        alert(data.message || 'Signup failed.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error during signup.');
+                })
+                .finally(() => resetAuthButton());
+            }
+        });
+
+        // Helper function to reset button state
+        function resetAuthButton() {
+            authSubmit.textContent = isLoginMode ? 'Login' : 'Create Account';
+            authSubmit.disabled = false;
+        }
+
+        // OTP Modal Logic
+        const otpModal = document.getElementById('otpModal');
+        const otpForm = document.getElementById('otpForm');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        const otpInputs = document.querySelectorAll('.otp-input');
+
+        function showOtpModal() {
+            otpModal.classList.remove('hidden');
+            otpModal.classList.add('flex');
+            otpInputs[0].focus();
+        }
+
+        function hideOtpModal() {
+            otpModal.classList.add('hidden');
+            otpModal.classList.remove('flex');
+            otpInputs.forEach(input => input.value = '');
+        }
+
+        // OTP input handling
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        otpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const enteredOtp = Array.from(otpInputs).map(input => input.value).join('');
+            
+            if (enteredOtp === currentOtp) {
+                if (window.tempUser) {
+                    // Complete signup
+                    users.push(window.tempUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    currentUser = window.tempUser;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showUserMenu();
+                    delete window.tempUser;
+                    alert('Account created successfully!');
+                } else {
+                    // Password reset
+                    alert('OTP verified! You can now reset your password.');
+                    // In a real app, you would show a password reset form here
+                }
+                hideOtpModal();
+            } else {
+                alert('Invalid OTP. Please try again.');
+            }
+        });
+
+        resendOtpBtn.addEventListener('click', function() {
+            currentOtp = generateOTP();
+            sendOTPEmail(otpEmail, currentOtp);
+        });
+
+        // OTP modal close handlers
+        document.getElementById('closeOtpModal').addEventListener('click', hideOtpModal);
+        document.getElementById('cancelOtpBtn').addEventListener('click', hideOtpModal);
+
+        otpModal.addEventListener('click', (e) => {
+            if (e.target === otpModal) hideOtpModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let blogPosts = [];
+            let isEditingBlog = false;
+            let editingBlogId = null;
+
+            // Fetch blogs from server
+            async function loadBlogs() {
+            try {
+                const res = await fetch('/get-blogs');
+                const data = await res.json();
+                if (data.success) {
+                    blogPosts = data.blogs;
+                    renderBlogPosts();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to load blogs from server.');
+            }
+        }
+
+        // Blog modal logic
+        const createBlogBtn = document.getElementById('createBlogBtn');
+        const blogModal = document.getElementById('blogModal');
+        const closeBlogModal = document.getElementById('closeBlogModal');
+        const blogForm = document.getElementById('blogForm');
+        const blogImageUpload = document.getElementById('blogImageUpload');
+        const blogImageInput = document.getElementById('blogImageInput');
+        const blogImagePreview = document.getElementById('blogImagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const cancelBlogBtn = document.getElementById('cancelBlogBtn');
+
+        createBlogBtn.addEventListener('click', function() {
+            if (!currentUser) {
+                alert('Please login to create a blog post');
+                showModal(true);
+                return;
+            }
+            showBlogModal();
+        });
+
+        function showBlogModal(blog = null) {
+            if (blog) {
+                isEditingBlog = true;
+                editingBlogId = blog._id;
+                document.getElementById('blogModalTitle').textContent = 'Edit Blog Post';
+                document.getElementById('blogTitle').value = blog.title;
+                document.getElementById('blogContent').value = blog.content;
+                if (blog.image) {
+                    previewImg.src = blog.image;
+                    blogImagePreview.classList.remove('hidden');
+                }
+            } else {
+                isEditingBlog = false;
+                editingBlogId = null;
+                document.getElementById('blogModalTitle').textContent = 'Create Blog Post';
+                blogForm.reset();
+                blogImagePreview.classList.add('hidden');
+            }
+            blogModal.classList.remove('hidden');
+            blogModal.classList.add('flex');
+        }
+
+        function hideBlogModal() {
+            blogModal.classList.add('hidden');
+            blogModal.classList.remove('flex');
+            blogForm.reset();
+            blogImagePreview.classList.add('hidden');
+            isEditingBlog = false;
+            editingBlogId = null;
+        }
+
+        closeBlogModal.addEventListener('click', hideBlogModal);
+        cancelBlogBtn.addEventListener('click', hideBlogModal);
+
+        blogImageUpload.addEventListener('click', () => blogImageInput.click());
+        blogImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    blogImagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save / Update blog on server
+        blogForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('blogTitle').value;
+            const content = document.getElementById('blogContent').value;
+            const image = previewImg.src || null;
+
+            try {
+                let resData;
+                if (isEditingBlog) {
+                    const res = await fetch('/update-blog', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: editingBlogId, title, content, image, authorEmail: currentUser.email })
+                    });
+                    resData = await res.json();
+                } else {
+                    const res = await fetch('/save-blog', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title, content, image,
+                            author: currentUser.fullName || currentUser.email,
+                            authorEmail: currentUser.email
+                        })
+                    });
+                    resData = await res.json();
+                }
+
+                if (resData.success) {
+                    await loadBlogs();
+                    hideBlogModal();
+                    alert(isEditingBlog ? 'Blog updated successfully!' : 'Blog created successfully!');
+                } else {
+                    alert('Failed to save blog.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error communicating with server.');
+            }   
+        });
+
+        // Render blogs
+        function renderBlogPosts() {
+            const blogPostsContainer = document.getElementById('blogPosts');
+    
+            if (!blogPosts || blogPosts.length === 0) {
+                blogPostsContainer.innerHTML = `<div class="col-span-full text-center py-12">
+                    <i class="fas fa-blog text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">No blog posts yet</h3>
+                    <p class="text-gray-500">Create your first blog post to get started!</p>
+                </div>`;
+                return;
+            }
+    
+            blogPostsContainer.innerHTML = blogPosts.map(blog => `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden blog-card">
+                    ${blog.image ? `<img src="${blog.image}" alt="${blog.title}" class="w-full h-48 object-cover">` : ''}
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-gray-900">${blog.title}</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3">${blog.content.substring(0, 150)}...</p>
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                            <span><i class="fas fa-user mr-1"></i>${blog.author}</span>
+                            <span><i class="fas fa-eye mr-1"></i>${blog.views} views</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-400">${new Date(blog.createdAt).toLocaleDateString()}</span>
+                            <div class="flex space-x-2">
+                                <button onclick="viewBlog(${blog._id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                <i class="fas fa-eye mr-1"></i>View
+                                </button>
+                                ${currentUser && currentUser.email === blog.authorEmail ? `
+                                    <button onclick="editBlog(${blog._id})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </button>
+                                <button onclick="deleteBlogServerHandler(${blog._id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                    <i class="fas fa-trash mr-1"></i>Delete
+                                </button>
+                            ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    // View blog (increment once per user)
+    async function viewBlog(blogId) {
+        const blog = blogPosts.find(b => b._id === blogId);
+        if (!blog) return;
+
+        const viewedBlogs = JSON.parse(localStorage.getItem('viewedBlogs')) || {};
+        if (!viewedBlogs[blogId]) {
+            // Increment server view count
+            try {
+                await fetch('/increment-view', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ _id: blogId })
+                });
+            } catch (err) { console.error(err); }
+
+            viewedBlogs[blogId] = true;
+            localStorage.setItem('viewedBlogs', JSON.stringify(viewedBlogs));
+        }
+
+        alert(`Viewing: ${blog.title}\n\n${blog.content}\n\nViews: ${blog.views + (viewedBlogs[blogId] ? 0 : 1)}`);
+        loadBlogs(); // Refresh
     }
 
-    /************* DB HELPERS *************/
-    const DB = {
-      users: ()=>JSON.parse(localStorage.getItem(KEYS.users)||'[]'),
-      saveUsers: u=>localStorage.setItem(KEYS.users, JSON.stringify(u)),
-      services: ()=>JSON.parse(localStorage.getItem(KEYS.services)||'[]'),
-      saveServices: s=>localStorage.setItem(KEYS.services, JSON.stringify(s)),
-      projects: ()=>JSON.parse(localStorage.getItem(KEYS.projects)||'[]'),
-      saveProjects: p=>localStorage.setItem(KEYS.projects, JSON.stringify(p)),
-      messages: ()=>JSON.parse(localStorage.getItem(KEYS.messages)||'[]'),
-      saveMessages: m=>localStorage.setItem(KEYS.messages, JSON.stringify(m)),
-      insights: ()=>JSON.parse(localStorage.getItem(KEYS.insights)||'{}'),
-      saveInsights: o=>localStorage.setItem(KEYS.insights, JSON.stringify(o)),
-      session: ()=>JSON.parse(localStorage.getItem(KEYS.session)||'null'),
-      setSession: s=>localStorage.setItem(KEYS.session, JSON.stringify(s)),
-      clearSession: ()=>localStorage.removeItem(KEYS.session),
-      device: ()=>localStorage.getItem(KEYS.device)
-    };
-
-    /************* UTILITIES *************/
-    function $(sel,el=document){return el.querySelector(sel)}
-    function $all(sel,el=document){return [...el.querySelectorAll(sel)]}
-    function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#061328;border:1px solid rgba(255,255,255,.06);padding:10px 14px;border-radius:10px;z-index:9999';document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
-
-    // Simple email validation (no server-side)
-    function validEmail(e){return e && e.indexOf('@')>0 && e.indexOf('.')>e.indexOf('@')}
-
-    /************* AUTH *************/
-    function register({name,email,phone,password}){
-      const users=DB.users(); if(users.find(u=>u.email===email)) throw new Error('Email already registered');
-      const u={name,email,phone,password,role:'user',created:Date.now()}; users.push(u); DB.saveUsers(users); return u;
-    }
-    function login(email,password){const users=DB.users(); const u=users.find(x=>x.email===email && x.password===password); if(!u) return null; DB.setSession({email:u.email,name:u.name,role:u.role}); return u}
-    function logout(){DB.clearSession(); renderAuthState(); toast('Logged out')}
-
-    /************* VIEW TRACKING *************/
-    // Identify visitor by session email else device id
-    function visitorId(){return DB.session()? DB.session().email : DB.device()}
-
-    // Track unique view for item (service/project)
-    function trackItemView(type,id){
-      const vid=visitorId();
-      if(type==='service'){
-        const arr=DB.services(); const it=arr.find(x=>x.id===id); if(!it) return; it.unique=it.unique||[]; if(!it.unique.includes(vid)){ it.unique.push(vid); it.views=(it.views||0)+1; DB.saveServices(arr); incrementDaily(); }
-      } else {
-        const arr=DB.projects(); const it=arr.find(x=>x.id===id); if(!it) return; it.unique=it.unique||[]; if(!it.unique.includes(vid)){ it.unique.push(vid); it.views=(it.views||0)+1; DB.saveProjects(arr); incrementDaily(); }
-      }
-      renderStats(); renderItems();
+    // Delete blog
+    async function deleteBlogServerHandler(blogId) {
+        if (!confirm('Are you sure you want to delete this blog?')) return;
+        try {
+            const res = await fetch('/delete-blog', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ _id: blogId, authorEmail: currentUser.email })
+            });
+            const data = await res.json();
+            if (data.success) await loadBlogs();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete blog.');
+        }  
     }
 
-    function incrementDaily(){
-      const ins=DB.insights(); const today=new Date().toISOString().slice(0,10);
-      let bucket=ins.daily.find(d=>d.date===today);
-      if(!bucket){ ins.daily.push({date:today,count:1}); ins.daily=ins.daily.slice(-7);} else bucket.count+=1;
-      ins.total=(ins.total||0)+1; DB.saveInsights(ins);
-      updateCharts();
+    // Edit blog
+    function editBlog(blogId) {
+        const blog = blogPosts.find(b => b._id === blogId);
+        if (blog) showBlogModal(blog);
     }
 
-    /************* RENDERERS *************/
-    function renderServices(){
-      const grid=$("#servicesGrid"); grid.innerHTML=''; DB.services().forEach(s=>{
-        const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div style="display:flex;justify-content:space-between"><div><h4>${escapeHtml(s.title)}</h4><div class='muted'>${escapeHtml(s.desc)}</div></div><div style='text-align:right'><div class='muted' style='font-size:12px'>Views: <b>${s.views||0}</b></div></div></div>`;
-        div.addEventListener('click',()=>openItem('service',s.id)); grid.appendChild(div);
-      });
+        // Load blogs on page load
+        loadBlogs();
+    }); 
+
+        // Insights functionality
+        function updateInsights() {
+            const totalViews = blogPosts.reduce((sum, blog) => sum + blog.views, 0);
+            const totalPosts = blogPosts.length;
+            const activeUsers = users.length;
+            const avgViews = totalPosts > 0 ? Math.round(totalViews / totalPosts) : 0;
+            
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('totalPosts').textContent = totalPosts;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('avgViews').textContent = avgViews;
+            
+            // Update popular posts
+            const popularPosts = [...blogPosts]
+                .sort((a, b) => b.views - a.views)
+                .slice(0, 5);
+            
+            const popularPostsContainer = document.getElementById('popularPosts');
+            if (popularPosts.length === 0) {
+                popularPostsContainer.innerHTML = '<p class="text-gray-500">No posts available</p>';
+            } else {
+                popularPostsContainer.innerHTML = popularPosts.map(post => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                            <h4 class="font-medium text-gray-900">${post.title}</h4>
+                            <p class="text-sm text-gray-500">by ${post.author}</p>
+                        </div>
+                        <span class="text-sm font-medium text-blue-600">${post.views} views</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Charts
+        let viewsChart = null;
+
+        function initializeCharts() {
+            const ctx = document.getElementById('viewsChart').getContext('2d');
+            
+            // Generate sample data for the last 7 days
+            const labels = [];
+            const data = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                data.push(Math.floor(Math.random() * 50) + 10);
+            }
+            
+            viewsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Views',
+                        data: data,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            if (viewsChart) {
+                // Update chart with real data based on blog views
+                const totalViews = blogPosts.reduce((sum, blog) => sum + blog.views, 0);
+                const newData = viewsChart.data.datasets[0].data.map(() => 
+                    Math.floor(Math.random() * totalViews / 7) + 1
+                );
+                viewsChart.data.datasets[0].data = newData;
+                viewsChart.update();
+            }
+        }
+
+        // File Upload Logic (existing code)
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const uploadedFiles = document.getElementById('uploadedFiles');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(files) {
+    if (files.length === 0) return;
+
+    const file = files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+
+    uploadProgress.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    progressText.textContent = 'Uploading...';
+
+    try {
+        const res = await fetch('/upload-image', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            progressBar.style.width = '100%';
+            progressText.textContent = 'Upload complete!';
+            displayUploadedFiles([file]); // show file in UI
+        } else {
+            alert('Upload failed: ' + data.error);
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error uploading file');
+    } finally {
+        setTimeout(() => {
+            uploadProgress.classList.add('hidden');
+            progressBar.style.width = '0%';
+        }, 1000);
     }
+}
 
-    function renderItems(){
-      const grid=$("#itemsGrid"); grid.innerHTML=''; const services=DB.services(); const projects=DB.projects(); const items=[...services.map(s=>({...s,type:'service'})), ...projects.map(p=>({...p,type:'project'}))];
-      items.forEach(item=>{
-        const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><b>${escapeHtml(item.title)}</b><div class='muted' style='font-size:13px'>${item.type==='project'? 'Project' : 'Service'}</div></div><div style='text-align:right'><div class='muted' style='font-size:12px'>Views: <b>${item.views||0}</b></div></div></div>`;
-        div.addEventListener('click',()=>openItem(item.type,item.id)); grid.appendChild(div);
-      });
-      // summary counts
-      $("#itemsStat").textContent = items.length;
-    }
+        function displayUploadedFiles(files) {
+            Array.from(files).forEach(file => {
+                const fileElement = document.createElement('div');
+                fileElement.className = 'flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-4';
+                
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'flex items-center';
+                
+                const icon = getFileIcon(file.type);
+                fileInfo.innerHTML = `
+                    <i class="${icon} text-2xl text-green-600 mr-3"></i>
+                    <div>
+                        <p class="font-medium text-gray-900">${file.name}</p>
+                        <p class="text-sm text-gray-500">${formatFileSize(file.size)} • Uploaded successfully</p>
+                    </div>
+                `;
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'text-red-500 hover:text-red-700 transition-colors';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.addEventListener('click', () => fileElement.remove());
+                
+                fileElement.appendChild(fileInfo);
+                fileElement.appendChild(deleteBtn);
+                uploadedFiles.appendChild(fileElement);
+            });
+        }
 
-    function renderStats(){
-      const ins=DB.insights(); $("#viewStat").textContent = ins.total||0; $("#msgsStat").textContent = DB.messages().length; $("#itemsStat").textContent = (DB.services().length + DB.projects().length);
-      // mini chart
-      updateCharts();
-    }
+        function getFileIcon(fileType) {
+            if (fileType.startsWith('image/')) return 'fas fa-image';
+            if (fileType.includes('pdf')) return 'fas fa-file-pdf';
+            if (fileType.includes('word')) return 'fas fa-file-word';
+            if (fileType.includes('zip') || fileType.includes('rar')) return 'fas fa-file-archive';
+            return 'fas fa-file';
+        }
 
-    function renderDashboardPanel(panel='overview'){
-      const panelEl=$("#dashPanel"); if(!DB.session()){ panelEl.innerHTML='<div class="muted">Please login as admin to manage content.</div>'; return; }
-      const session = DB.session(); if(session.role!=='admin'){ panelEl.innerHTML='<div class="muted">Admin only.</div>'; return; }
-      if(panel==='overview'){
-        const ins=DB.insights(); panelEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><div class='card'><b>Total Views</b><div style='font-size:22px;margin-top:6px'>${ins.total||0}</div></div><div class='card'><b>Tracked Items</b><div style='font-size:22px;margin-top:6px'>${DB.services().length+DB.projects().length}</div></div><div class='card'><b>Messages</b><div style='font-size:22px;margin-top:6px'>${DB.messages().length}</div></div></div><div style='margin-top:12px'><h4>Recent Messages</h4><div id='msgsList'></div></div>`; renderMessagesList();
-      } else if(panel==='services'){
-        const rows=DB.services().map(s=>`<tr><td>${escapeHtml(s.title)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(s.desc)}</td><td><button class='btn' data-edit='${s.id}'>Edit</button><button class='btn secondary' data-del='${s.id}'>Delete</button></td></tr>`).join('');
-        panelEl.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center'><h4>Services</h4><div><button class='btn' id='addServiceBtn'>Add Service</button></div></div><table class='table' style='margin-top:12px'><thead><tr><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-        // bind
-        $all('[data-edit]').forEach(b=>b.addEventListener('click',()=>openEditModal('service',b.dataset.edit)));
-        $all('[data-del]').forEach(b=>b.addEventListener('click',()=>deleteService(b.dataset.del)));
-        $('#addServiceBtn').addEventListener('click',()=>openEditModal('service'));
-      } else if(panel==='projects'){
-        const rows=DB.projects().map(p=>`<tr><td>${escapeHtml(p.title)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(p.img||'')}</td><td><button class='btn' data-editp='${p.id}'>Edit</button><button class='btn secondary' data-delp='${p.id}'>Delete</button></td></tr>`).join('');
-        panelEl.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center'><h4>Projects</h4><div><button class='btn' id='addProjectBtn'>Add Project</button></div></div><table class='table' style='margin-top:12px'><thead><tr><th>Title</th><th>Image URL</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-        $all('[data-editp]').forEach(b=>b.addEventListener('click',()=>openEditModal('project',b.dataset.editp)));
-        $all('[data-delp]').forEach(b=>b.addEventListener('click',()=>deleteProject(b.dataset.delp)));
-        $('#addProjectBtn').addEventListener('click',()=>openEditModal('project'));
-      } else if(panel==='msgs'){
-        const msgs=DB.messages(); const rows=msgs.map((m,i)=>`<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(m.msg)}</td><td><button class='btn' data-delm='${i}'>Delete</button></td></tr>`).join('');
-        panelEl.innerHTML=`<h4>Messages</h4><table class='table' style='margin-top:12px'><thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-        $all('[data-delm]').forEach(b=>b.addEventListener('click',()=>{ deleteMessage(+b.dataset.delm); renderDashboardPanel('msgs'); }));
-      } else if(panel==='profile'){
-        const s=DB.session(); const user=DB.users().find(u=>u.email===s.email);
-        panelEl.innerHTML=`<h4>Profile</h4><form id='profileForm'><input id='pfName' value='${escapeHtml(user.name)}' /><input id='pfEmail' value='${escapeHtml(user.email)}' /><input id='pfPhone' value='${escapeHtml(user.phone||'')}' /><input id='pfPass' placeholder='New password (leave blank)' /><div style='margin-top:8px'><button class='btn' type='submit'>Save</button></div></form>`;
-        $('#profileForm').addEventListener('submit',e=>{e.preventDefault(); const name=$('#pfName').value.trim(); const email=$('#pfEmail').value.trim(); const phone=$('#pfPhone').value.trim(); const pass=$('#pfPass').value; const users=DB.users(); const idx=users.findIndex(u=>u.email===s.email); if(idx===-1){toast('User missing');return;} if(email!==users[idx].email && users.find(u=>u.email===email)){toast('Email in use');return;} users[idx].name=name; users[idx].email=email; users[idx].phone=phone; if(pass) users[idx].password=pass; DB.saveUsers(users); DB.setSession({email:email,name:name,role:users[idx].role}); toast('Profile updated'); renderAuthState(); renderDashboardPanel('profile'); });
-      }
-    }
-
-    function renderMessagesList(){
-      const el=$("#msgsList"); const msgs=DB.messages(); if(!msgs.length){ el.innerHTML='<div class="muted">No messages yet.</div>'; return; } el.innerHTML = msgs.slice(-5).reverse().map(m=>`<div style='padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.03);margin-bottom:8px'><b>${escapeHtml(m.name)}</b> <div class='muted' style='font-size:13px'>${escapeHtml(m.email)}</div><div style='margin-top:6px'>${escapeHtml(m.msg)}</div></div>`).join(''); }
-
-    function renderMessagesCount(){ $("#msgsStat").textContent = DB.messages().length }
-
-    /************* ITEMS CRUD *************/
-    function openEditModal(type,id){ const modal=$("#editModal"); $("#editType").value=type; $("#editId").value=id||''; if(id){ if(type==='service'){ const s=DB.services().find(x=>x.id===id); $("#editTitleInput").value=s.title; $("#editDescInput").value=s.desc; $("#editImgInput").value=''; } else { const p=DB.projects().find(x=>x.id===id); $("#editTitleInput").value=p.title; $("#editImgInput").value=p.img||''; $("#editDescInput").value=''; } } else { $("#editTitleInput").value=''; $("#editImgInput").value=''; $("#editDescInput").value=''; } modal.style.display='flex'; }
-
-    function deleteService(id){ if(!confirm('Delete this service?')) return; const sess=DB.session(); if(!sess || sess.role!=='admin'){toast('Admin only'); return;} const arr=DB.services().filter(x=>x.id!==id); DB.saveServices(arr); renderServices(); renderDashboardPanel('services'); renderItems(); toast('Service deleted'); }
-    function deleteProject(id){ if(!confirm('Delete this project?')) return; const sess=DB.session(); if(!sess || sess.role!=='admin'){toast('Admin only'); return;} const arr=DB.projects().filter(x=>x.id!==id); DB.saveProjects(arr); renderDashboardPanel('projects'); renderItems(); toast('Project deleted'); }
-
-    function deleteMessage(i){ const msgs=DB.messages(); msgs.splice(i,1); DB.saveMessages(msgs); renderMessagesCount(); toast('Message deleted'); }
-
-    /************* ITEM DETAILS & VIEW *************/
-    function openItem(type,id){ const modal=$("#itemModal"); const titleEl=$("#itemTitle"); const bodyEl=$("#itemBody"); if(type==='service'){ const s=DB.services().find(x=>x.id===id); titleEl.textContent = s.title; bodyEl.innerHTML = `<div class='muted'>${escapeHtml(s.desc)}</div><div style='margin-top:8px' class='muted'>Views: <b>${s.views||0}</b></div>`; } else { const p=DB.projects().find(x=>x.id===id); titleEl.textContent=p.title; bodyEl.innerHTML=`<img src='${escapeHtml(p.img)}' style='width:100%;border-radius:8px;object-fit:cover;margin-bottom:8px' /><div class='muted'>Views: <b>${p.views||0}</b></div>`; } modal.style.display='flex'; trackItemView(type,id); }
-
-    /************* CONTACT FORM (mailto fallback) *************/
-    document.getElementById('contactForm').addEventListener('submit',function(e){ e.preventDefault(); const name=$("#contactName").value.trim(); const email=$("#contactEmail").value.trim(); const msg=$("#contactMsg").value.trim(); if(!name||!email||!msg){ toast('Please fill all fields and message.'); return; } if(!validEmail(email)){ toast('Enter a valid email'); return; }
-      // Save message locally
-      const messages=DB.messages(); messages.push({name,email,msg,ts:Date.now()}); DB.saveMessages(messages); renderMessagesCount(); renderDashboardPanel('overview'); toast('Message saved locally');
-      // Attempt to open mail client to send to agency email (cannot auto-send without server)
-      const agency='sumitkumarprasad57@gmail.com'; const subject=encodeURIComponent('Contact from '+name); const body=encodeURIComponent(['Name: '+name, 'Email: '+email, '', msg].join('%0A'));
-      // Open mailto to prefill email (user must send from their client)
-      window.location.href = 'mailto:'+agency+'?subject='+subject+'&body='+body;
-    });
-
-    /************* AUTH MODAL & FLOW *************/
-    // show/hide auth modal
-    $('#btnLogin').addEventListener('click',()=>{ $('#authModal').style.display='flex'; showAuth('login'); });
-    $('#closeAuth').addEventListener('click',()=>$('#authModal').style.display='none');
-    $('#showLogin').addEventListener('click', ()=>showAuth('login'));
-    $('#showRegister').addEventListener('click',()=>showAuth('register'));
-
-    function showAuth(mode){ if(mode==='login'){ $('#loginForm').classList.remove('hidden'); $('#registerForm').classList.add('hidden'); } else { $('#loginForm').classList.add('hidden'); $('#registerForm').classList.remove('hidden'); } }
-
-    $('#loginForm').addEventListener('submit',function(e){ e.preventDefault(); const email=$('#loginEmail').value.trim(); const pass=$('#loginPass').value; if(!email||!pass){ $('#loginStatus').textContent='Enter credentials'; return; } const u=login(email,pass); if(!u){ $('#loginStatus').textContent='Invalid credentials'; return; } $('#authModal').style.display='none'; $('#loginStatus').textContent=''; renderAuthState(); toast('Logged in'); renderDashboardPanel('overview'); });
-
-    $('#registerForm').addEventListener('submit',function(e){ e.preventDefault(); try{ const u=register({name:$('#regName').value.trim(), email:$('#regEmail').value.trim(), phone:$('#regPhone').value.trim(), password:$('#regPass').value}); toast('Account created. You can now login.'); showAuth('login'); }catch(err){ toast(err.message); } });
-
-    $('#btnLogout').addEventListener('click',()=>{ logout(); document.getElementById('dashboard').style.display='none'; });
-
-    function renderAuthState(){ const s=DB.session(); if(s){ $('#btnLogin').textContent='Account: '+(s.name||s.email); $('#btnGetStarted').textContent='Open Dashboard'; } else { $('#btnLogin').textContent='Login'; $('#btnGetStarted').textContent='Get Started'; } }
-
-    // Get Started behavior
-    $('#btnGetStarted').addEventListener('click',()=>{ if(!DB.session()){ $('#authModal').style.display='flex'; showAuth('login'); } else { document.getElementById('dashboard').style.display='block'; document.getElementById('dashboard').scrollIntoView({behavior:'smooth'}); renderDashboardPanel('overview'); } });
-
-    /************* EDIT FORM SUBMIT *************/
-    $('#editForm').addEventListener('submit',function(e){ e.preventDefault(); const type=$('#editType').value; const id=$('#editId').value; const title=$('#editTitleInput').value.trim(); const img=$('#editImgInput').value.trim(); const desc=$('#editDescInput').value.trim(); const sess=DB.session(); if(!sess || sess.role!=='admin'){ toast('Admin only'); $('#editModal').style.display='none'; return; } if(type==='service'){ if(id){ const arr=DB.services(); const idx=arr.findIndex(x=>x.id===id); arr[idx].title=title; arr[idx].desc=desc; DB.saveServices(arr); } else { const arr=DB.services(); arr.push({id:crypto.randomUUID(),title,desc,views:0,unique:[]}); DB.saveServices(arr); } } else { if(id){ const arr=DB.projects(); const idx=arr.findIndex(x=>x.id===id); arr[idx].title=title; arr[idx].img=img; DB.saveProjects(arr); } else { const arr=DB.projects(); arr.push({id:crypto.randomUUID(),title,img,views:0,unique:[]}); DB.saveProjects(arr); } } $('#editModal').style.display='none'; renderServices(); renderItems(); renderDashboardPanel(type==='service'?'services':'projects'); toast('Saved'); });
-
-    // close modal by data-close
-    $all('[data-close]').forEach(b=>b.addEventListener('click',()=>{ $('#'+b.dataset.close).style.display='none' }));
-
-    /************* CHARTS *************/
-    let insChart=null; let miniChart=null;
-    function updateCharts(){ const ins=DB.insights(); const labels=ins.daily.map(d=>d.date.slice(5)); const data=ins.daily.map(d=>d.count); // update main insights chart
-      const ctx=$("#insChart"); if(!insChart){ insChart=new Chart(ctx,{type:'bar',data:{labels, datasets:[{label:'Views',data,backgroundColor:createGradient(ctx),borderRadius:6}]}, options:{responsive:true,plugins:{legend:{display:false},tooltip:{mode:'index'}}}}); } else { insChart.data.labels=labels; insChart.data.datasets[0].data=data; insChart.update(); }
-      // mini chart
-      const mctx=$("#miniChart"); if(!miniChart){ miniChart=new Chart(mctx,{type:'line',data:{labels, datasets:[{label:'Last 7 days',data,fill:true,tension:0.35,borderColor:'rgba(108,99,255,0.9)',backgroundColor:gradientLine(mctx)}]},options:{responsive:true,plugins:{legend:{display:false}}}}); } else { miniChart.data.datasets[0].data=data; miniChart.data.labels=labels; miniChart.update(); }
-    }
-    function createGradient(canvas){ const ctx=canvas.getContext('2d'); const g=ctx.createLinearGradient(0,0,0,200); g.addColorStop(0,'rgba(108,99,255,0.9)'); g.addColorStop(1,'rgba(0,194,168,0.15)'); return g; }
-    function gradientLine(canvas){ const ctx=canvas.getContext('2d'); const g=ctx.createLinearGradient(0,0,0,200); g.addColorStop(0,'rgba(108,99,255,0.25)'); g.addColorStop(1,'rgba(0,194,168,0.02)'); return g; }
-
-    /************* HELPERS *************/
-    function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
-
-    /************* MISC ACTION BINDINGS *************/
-    // nav scroll
-    $all('[data-scroll]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); const id=a.getAttribute('href').slice(1); document.getElementById(id).scrollIntoView({behavior:'smooth'}); }));
-    $('#btnExplore').addEventListener('click',()=>document.getElementById('services').scrollIntoView({behavior:'smooth'}));
-    $('#btnContact').addEventListener('click',()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}));
-
-    // Insights filter change
-    $('#insFilter').addEventListener('change',()=>{ // for demo, same chart; could implement filtered chart
-      // If user wants per-type charts, additional aggregation would be done here.
-      updateCharts();
-    });
-
-    // dashboard menu
-    $('#dashOverview').addEventListener('click',()=>renderDashboardPanel('overview'));
-    $('#dashServices').addEventListener('click',()=>renderDashboardPanel('services'));
-    $('#dashProjects').addEventListener('click',()=>renderDashboardPanel('projects'));
-    $('#dashMsgs').addEventListener('click',()=>renderDashboardPanel('msgs'));
-    $('#dashProfile').addEventListener('click',()=>renderDashboardPanel('profile'));
-
-    /************* INIT *************/
-    function init(){ seed(); renderServices(); renderItems(); renderStats(); renderAuthState(); // show dashboard if session exists
-      if(DB.session()) document.getElementById('dashboard').style.display='block';
-      // close modals on outside click
-      $all('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
-      // initial chart
-      updateCharts();
-    }
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
-
-  <footer class="container"><div class="muted">Demo CloudEdge Agency — client-side demo. For automatic email sending, integrate EmailJS or a server-side SMTP.</div></footer>
-</body>
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976ddb778299d966',t:'MTc1NjQ4OTQ3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
