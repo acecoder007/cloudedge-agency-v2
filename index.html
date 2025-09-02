@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CloudEdge Agency — Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#071126;--card:#0f1b2b;--muted:#9fb0d6;--primary:#6C63FF;--accent:#00C2A8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Poppins,system-ui,Arial;background:linear-gradient(180deg,#051025 0%,#071126 100%);color:#eaf2ff}
+    a{color:inherit}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    header{position:sticky;top:0;background:rgba(4,12,24,.6);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.04)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 10px 30px rgba(108,99,255,.15)}
+    nav ul{display:flex;gap:14px;list-style:none;margin:0;padding:0}
+    nav a{padding:8px 12px;border-radius:10px;color:rgba(235,245,255,.9)}
+    nav a:hover{background:rgba(108,99,255,.08);transform:translateY(-2px)}
+    .actions{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--primary);border:0;padding:9px 12px;border-radius:10px;color:#fff;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,.08)}
+
+    /* Hero */
+    .hero{padding:36px 0}
+    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:start}
+    @media(max-width:980px){.hero-grid{grid-template-columns:1fr}}
+    .hero h1{font-size:34px;margin:6px 0;font-weight:600}
+    .hero p{color:var(--muted);margin:0 0 16px}
+    .stats{display:flex;gap:12px;margin-top:18px}
+    .stat{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.04);text-align:center;flex:1}
+    .stat b{display:block;font-size:20px}
+
+    /* Sections */
+    section{padding:28px 0}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.cards{grid-template-columns:1fr}}
+    .card{background:var(--card);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.04);box-shadow:0 12px 30px rgba(2,5,12,.6);cursor:pointer;transition:transform .18s}
+    .card:hover{transform:translateY(-6px)}
+    .card h4{margin:6px 0}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Insights */
+    #insightsTop{display:flex;gap:12px;align-items:center}
+    .ins-left{flex:1}
+    .ins-right{width:360px}
+
+    /* Contact */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:640px){.form-row{grid-template-columns:1fr}}
+    input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);color:#eaf2ff}
+
+    /* Dashboard */
+    .dashboard{display:none;margin-top:18px}
+    .dash-grid{display:grid;grid-template-columns:260px 1fr;gap:14px}
+    @media(max-width:860px){.dash-grid{grid-template-columns:1fr}}
+    .aside{background:var(--card);padding:12px;border-radius:12px}
+    .panel{background:var(--card);padding:14px;border-radius:12px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.03);text-align:left}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(2,6,12,.6);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal .box{width:100%;max-width:560px;background:#061429;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,.04)}
+
+    .right{margin-left:auto}
+    .hidden{display:none}
+
+    footer{padding:26px 0;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div style="font-weight:700">CloudEdge Agency</div>
+          <div class="muted" style="font-size:12px">End-to-end cloud & web solutions</div>
+        </div>
+      </div>
+      <nav>
+        <ul id="navLinks">
+          <li><a href="#home" data-scroll>Home</a></li>
+          <li><a href="#services" data-scroll>Services</a></li>
+          <li><a href="#insights" data-scroll>My Insights</a></li>
+          <li><a href="#contact" data-scroll>Contact</a></li>
+          <li><a href="#dashboard" data-scroll>Dashboard</a></li>
+        </ul>
+      </nav>
+      <div class="actions">
+        <button class="btn secondary" id="btnLogin">Login</button>
+        <button class="btn" id="btnGetStarted">Get Started</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="hero-grid">
+        <div>
+          <h1>We build & host modern cloud-powered websites for businesses.</h1>
+          <p class="muted">CloudEdge Agency provides cloud consulting, web development & managed hosting — designed for reliability, security and scale.</p>
+          <div style="margin-top:12px" class="stats">
+            <div class="stat"><b id="viewStat">0</b><span class="muted">Total Views</span></div>
+            <div class="stat"><b id="itemsStat">0</b><span class="muted">Items Tracked</span></div>
+            <div class="stat"><b id="msgsStat">0</b><span class="muted">Messages</span></div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn" id="btnExplore">Explore Services</button>
+            <button class="btn secondary" id="btnContact">Contact Us</button>
+          </div>
+        </div>
+        <div style="position:relative">
+          <div class="card" style="padding:14px">
+            <div style="font-weight:600">Quick Insights</div>
+            <div class="muted" style="font-size:13px;margin-top:6px">This dashboard shows live views & item-level metrics (unique by account/device).</div>
+            <canvas id="miniChart" style="width:100%;height:150px;margin-top:12px;background:transparent;border-radius:8px"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3>Services</h3>
+        <div class="muted">Click any card to open details (views tracked)</div>
+      </div>
+      <div class="cards" id="servicesGrid"></div>
+    </section>
+
+    <!-- Insights -->
+    <section id="insights">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div class="ins-left">
+          <h3>My Insights</h3>
+          <div class="muted">Detailed view counts and trends for services and projects. Views are unique per account/device.</div>
+          <div style="margin-top:12px" id="insSummary"></div>
+        </div>
+        <div class="ins-right">
+          <div class="card" style="padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:600">Views (7 days)</div><div><select id="insFilter"><option value="all">All</option><option value="services">Services</option><option value="projects">Projects</option></select></div></div>
+            <canvas id="insChart" style="width:100%;height:220px;margin-top:8px"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <h4>Tracked Items (click to view)</h4>
+        <div class="cards" id="itemsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <h3>Contact Us</h3>
+        <div class="muted">Messages are saved locally. This demo opens your mail client to send mail to the agency's Gmail.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:14px;margin-top:12px">
+        <div class="card">
+          <form id="contactForm">
+            <div class="form-row">
+              <input id="contactName" placeholder="Your name" required />
+              <input id="contactEmail" placeholder="Your email" required />
+            </div>
+            <textarea id="contactMsg" rows="6" placeholder="Message (required)" required></textarea>
+            <div style="display:flex;gap:8px;align-items:center"><button class="btn" type="submit">Send Message</button><div class="muted">Or use email client</div></div>
+          </form>
+        </div>
+        <div class="card">
+          <div style="font-weight:600">CloudEdge Agency</div>
+          <div class="muted" style="margin-top:6px">Email: <a href="mailto:sumitkumarprasad57@gmail.com">sumitkumarprasad57@gmail.com</a><br>Phone: +91 9766829168</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard" id="dashboard">
+      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center"><h3>Admin Dashboard</h3><div class="muted">Manage items & view messages</div></div>
+      <div class="dash-grid">
+        <aside class="aside">
+          <div style="font-weight:600;margin-bottom:8px">Manage</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn secondary" id="dashOverview">Overview</button>
+            <button class="btn secondary" id="dashServices">Services</button>
+            <button class="btn secondary" id="dashProjects">Projects</button>
+            <button class="btn secondary" id="dashMsgs">Messages</button>
+            <button class="btn secondary" id="dashProfile">Profile</button>
+            <button class="btn" id="btnLogout">Logout</button>
+          </div>
+        </aside>
+        <div class="panel" id="dashPanel">
+          <!-- dynamic content -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modals -->
+  <div class="modal" id="authModal">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-weight:700">Login / Register</div><button class="btn secondary" id="closeAuth">Close</button></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn" id="showLogin">Login</button><button class="btn secondary" id="showRegister">Register</button></div>
+      <form id="loginForm">
+        <input id="loginEmail" placeholder="Email" required />
+        <input id="loginPass" type="password" placeholder="Password" required />
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Login</button><div class="muted right" id="loginStatus"></div></div>
+      </form>
+      <form id="registerForm" class="hidden">
+        <input id="regName" placeholder="Full name" required />
+        <input id="regEmail" placeholder="Email" required />
+        <input id="regPhone" placeholder="Phone" required />
+        <input id="regPass" type="password" placeholder="Password" required />
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Create Account</button><div class="muted right">Your account is saved locally (demo)</div></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="itemModal">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div id="itemTitle" style="font-weight:700"></div><button class="btn secondary" data-close="itemModal">Close</button></div>
+      <div id="itemBody"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="editModal">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div id="editTitle" style="font-weight:700">Edit Item</div><button class="btn secondary" data-close="editModal">Close</button></div>
+      <form id="editForm">
+        <input id="editType" hidden />
+        <input id="editId" hidden />
+        <input id="editTitleInput" placeholder="Title" required />
+        <input id="editImgInput" placeholder="Image URL (for projects)" />
+        <textarea id="editDescInput" rows="4" placeholder="Description"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /************* STORAGE KEYS & SEED *************/
+    const KEYS = {users:'ce_users', session:'ce_session', services:'ce_services', projects:'ce_projects', messages:'ce_messages', insights:'ce_insights', device:'ce_device'};
+
+    function seed(){
+      if(!localStorage.getItem(KEYS.device)) localStorage.setItem(KEYS.device, crypto.randomUUID());
+      if(!localStorage.getItem(KEYS.users)){
+        const admin = {name:'Sumit Kumar Prasad', email:'sumitkumarprasad57@gmail.com', phone:'+91 9766829168', password:'Admin@123', role:'admin', created:Date.now()};
+        localStorage.setItem(KEYS.users, JSON.stringify([admin]));
+      }
+      if(!localStorage.getItem(KEYS.services)){
+        const sv=[
+          {id:crypto.randomUUID(), title:'Cloud Consulting & Migration', desc:'Assessment and seamless AWS migration.', views:0, unique:[]},
+          {id:crypto.randomUUID(), title:'Web Development & Hosting', desc:'Responsive sites and CI/CD hosting.', views:0, unique:[]},
+          {id:crypto.randomUUID(), title:'Cybersecurity & Compliance', desc:'WAF, hardening and monitoring.', views:0, unique:[]}
+        ]; localStorage.setItem(KEYS.services, JSON.stringify(sv));
+      }
+      if(!localStorage.getItem(KEYS.projects)){
+        const pr=[
+          {id:crypto.randomUUID(), title:'Retail Cloud Migration', img:'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop', views:0, unique:[]},
+          {id:crypto.randomUUID(), title:'SaaS Landing Revamp', img:'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1400&auto=format&fit=crop', views:0, unique:[]}
+        ]; localStorage.setItem(KEYS.projects, JSON.stringify(pr));
+      }
+      if(!localStorage.getItem(KEYS.messages)) localStorage.setItem(KEYS.messages, JSON.stringify([]));
+      if(!localStorage.getItem(KEYS.insights)){
+        // daily buckets (last 7 days)
+        const daily=[]; const today=new Date(); for(let i=6;i>=0;i--){const d=new Date(today); d.setDate(today.getDate()-i); daily.push({date:d.toISOString().slice(0,10),count:0});}
+        localStorage.setItem(KEYS.insights, JSON.stringify({daily, total:0}));
+      }
+    }
+
+    /************* DB HELPERS *************/
+    const DB = {
+      users: ()=>JSON.parse(localStorage.getItem(KEYS.users)||'[]'),
+      saveUsers: u=>localStorage.setItem(KEYS.users, JSON.stringify(u)),
+      services: ()=>JSON.parse(localStorage.getItem(KEYS.services)||'[]'),
+      saveServices: s=>localStorage.setItem(KEYS.services, JSON.stringify(s)),
+      projects: ()=>JSON.parse(localStorage.getItem(KEYS.projects)||'[]'),
+      saveProjects: p=>localStorage.setItem(KEYS.projects, JSON.stringify(p)),
+      messages: ()=>JSON.parse(localStorage.getItem(KEYS.messages)||'[]'),
+      saveMessages: m=>localStorage.setItem(KEYS.messages, JSON.stringify(m)),
+      insights: ()=>JSON.parse(localStorage.getItem(KEYS.insights)||'{}'),
+      saveInsights: o=>localStorage.setItem(KEYS.insights, JSON.stringify(o)),
+      session: ()=>JSON.parse(localStorage.getItem(KEYS.session)||'null'),
+      setSession: s=>localStorage.setItem(KEYS.session, JSON.stringify(s)),
+      clearSession: ()=>localStorage.removeItem(KEYS.session),
+      device: ()=>localStorage.getItem(KEYS.device)
+    };
+
+    /************* UTILITIES *************/
+    function $(sel,el=document){return el.querySelector(sel)}
+    function $all(sel,el=document){return [...el.querySelectorAll(sel)]}
+    function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#061328;border:1px solid rgba(255,255,255,.06);padding:10px 14px;border-radius:10px;z-index:9999';document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+
+    // Simple email validation (no server-side)
+    function validEmail(e){return e && e.indexOf('@')>0 && e.indexOf('.')>e.indexOf('@')}
+
+    /************* AUTH *************/
+    function register({name,email,phone,password}){
+      const users=DB.users(); if(users.find(u=>u.email===email)) throw new Error('Email already registered');
+      const u={name,email,phone,password,role:'user',created:Date.now()}; users.push(u); DB.saveUsers(users); return u;
+    }
+    function login(email,password){const users=DB.users(); const u=users.find(x=>x.email===email && x.password===password); if(!u) return null; DB.setSession({email:u.email,name:u.name,role:u.role}); return u}
+    function logout(){DB.clearSession(); renderAuthState(); toast('Logged out')}
+
+    /************* VIEW TRACKING *************/
+    // Identify visitor by session email else device id
+    function visitorId(){return DB.session()? DB.session().email : DB.device()}
+
+    // Track unique view for item (service/project)
+    function trackItemView(type,id){
+      const vid=visitorId();
+      if(type==='service'){
+        const arr=DB.services(); const it=arr.find(x=>x.id===id); if(!it) return; it.unique=it.unique||[]; if(!it.unique.includes(vid)){ it.unique.push(vid); it.views=(it.views||0)+1; DB.saveServices(arr); incrementDaily(); }
+      } else {
+        const arr=DB.projects(); const it=arr.find(x=>x.id===id); if(!it) return; it.unique=it.unique||[]; if(!it.unique.includes(vid)){ it.unique.push(vid); it.views=(it.views||0)+1; DB.saveProjects(arr); incrementDaily(); }
+      }
+      renderStats(); renderItems();
+    }
+
+    function incrementDaily(){
+      const ins=DB.insights(); const today=new Date().toISOString().slice(0,10);
+      let bucket=ins.daily.find(d=>d.date===today);
+      if(!bucket){ ins.daily.push({date:today,count:1}); ins.daily=ins.daily.slice(-7);} else bucket.count+=1;
+      ins.total=(ins.total||0)+1; DB.saveInsights(ins);
+      updateCharts();
+    }
+
+    /************* RENDERERS *************/
+    function renderServices(){
+      const grid=$("#servicesGrid"); grid.innerHTML=''; DB.services().forEach(s=>{
+        const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div style="display:flex;justify-content:space-between"><div><h4>${escapeHtml(s.title)}</h4><div class='muted'>${escapeHtml(s.desc)}</div></div><div style='text-align:right'><div class='muted' style='font-size:12px'>Views: <b>${s.views||0}</b></div></div></div>`;
+        div.addEventListener('click',()=>openItem('service',s.id)); grid.appendChild(div);
+      });
+    }
+
+    function renderItems(){
+      const grid=$("#itemsGrid"); grid.innerHTML=''; const services=DB.services(); const projects=DB.projects(); const items=[...services.map(s=>({...s,type:'service'})), ...projects.map(p=>({...p,type:'project'}))];
+      items.forEach(item=>{
+        const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><b>${escapeHtml(item.title)}</b><div class='muted' style='font-size:13px'>${item.type==='project'? 'Project' : 'Service'}</div></div><div style='text-align:right'><div class='muted' style='font-size:12px'>Views: <b>${item.views||0}</b></div></div></div>`;
+        div.addEventListener('click',()=>openItem(item.type,item.id)); grid.appendChild(div);
+      });
+      // summary counts
+      $("#itemsStat").textContent = items.length;
+    }
+
+    function renderStats(){
+      const ins=DB.insights(); $("#viewStat").textContent = ins.total||0; $("#msgsStat").textContent = DB.messages().length; $("#itemsStat").textContent = (DB.services().length + DB.projects().length);
+      // mini chart
+      updateCharts();
+    }
+
+    function renderDashboardPanel(panel='overview'){
+      const panelEl=$("#dashPanel"); if(!DB.session()){ panelEl.innerHTML='<div class="muted">Please login as admin to manage content.</div>'; return; }
+      const session = DB.session(); if(session.role!=='admin'){ panelEl.innerHTML='<div class="muted">Admin only.</div>'; return; }
+      if(panel==='overview'){
+        const ins=DB.insights(); panelEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><div class='card'><b>Total Views</b><div style='font-size:22px;margin-top:6px'>${ins.total||0}</div></div><div class='card'><b>Tracked Items</b><div style='font-size:22px;margin-top:6px'>${DB.services().length+DB.projects().length}</div></div><div class='card'><b>Messages</b><div style='font-size:22px;margin-top:6px'>${DB.messages().length}</div></div></div><div style='margin-top:12px'><h4>Recent Messages</h4><div id='msgsList'></div></div>`; renderMessagesList();
+      } else if(panel==='services'){
+        const rows=DB.services().map(s=>`<tr><td>${escapeHtml(s.title)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(s.desc)}</td><td><button class='btn' data-edit='${s.id}'>Edit</button><button class='btn secondary' data-del='${s.id}'>Delete</button></td></tr>`).join('');
+        panelEl.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center'><h4>Services</h4><div><button class='btn' id='addServiceBtn'>Add Service</button></div></div><table class='table' style='margin-top:12px'><thead><tr><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+        // bind
+        $all('[data-edit]').forEach(b=>b.addEventListener('click',()=>openEditModal('service',b.dataset.edit)));
+        $all('[data-del]').forEach(b=>b.addEventListener('click',()=>deleteService(b.dataset.del)));
+        $('#addServiceBtn').addEventListener('click',()=>openEditModal('service'));
+      } else if(panel==='projects'){
+        const rows=DB.projects().map(p=>`<tr><td>${escapeHtml(p.title)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(p.img||'')}</td><td><button class='btn' data-editp='${p.id}'>Edit</button><button class='btn secondary' data-delp='${p.id}'>Delete</button></td></tr>`).join('');
+        panelEl.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center'><h4>Projects</h4><div><button class='btn' id='addProjectBtn'>Add Project</button></div></div><table class='table' style='margin-top:12px'><thead><tr><th>Title</th><th>Image URL</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+        $all('[data-editp]').forEach(b=>b.addEventListener('click',()=>openEditModal('project',b.dataset.editp)));
+        $all('[data-delp]').forEach(b=>b.addEventListener('click',()=>deleteProject(b.dataset.delp)));
+        $('#addProjectBtn').addEventListener('click',()=>openEditModal('project'));
+      } else if(panel==='msgs'){
+        const msgs=DB.messages(); const rows=msgs.map((m,i)=>`<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td style='max-width:420px;overflow:hidden;text-overflow:ellipsis'>${escapeHtml(m.msg)}</td><td><button class='btn' data-delm='${i}'>Delete</button></td></tr>`).join('');
+        panelEl.innerHTML=`<h4>Messages</h4><table class='table' style='margin-top:12px'><thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+        $all('[data-delm]').forEach(b=>b.addEventListener('click',()=>{ deleteMessage(+b.dataset.delm); renderDashboardPanel('msgs'); }));
+      } else if(panel==='profile'){
+        const s=DB.session(); const user=DB.users().find(u=>u.email===s.email);
+        panelEl.innerHTML=`<h4>Profile</h4><form id='profileForm'><input id='pfName' value='${escapeHtml(user.name)}' /><input id='pfEmail' value='${escapeHtml(user.email)}' /><input id='pfPhone' value='${escapeHtml(user.phone||'')}' /><input id='pfPass' placeholder='New password (leave blank)' /><div style='margin-top:8px'><button class='btn' type='submit'>Save</button></div></form>`;
+        $('#profileForm').addEventListener('submit',e=>{e.preventDefault(); const name=$('#pfName').value.trim(); const email=$('#pfEmail').value.trim(); const phone=$('#pfPhone').value.trim(); const pass=$('#pfPass').value; const users=DB.users(); const idx=users.findIndex(u=>u.email===s.email); if(idx===-1){toast('User missing');return;} if(email!==users[idx].email && users.find(u=>u.email===email)){toast('Email in use');return;} users[idx].name=name; users[idx].email=email; users[idx].phone=phone; if(pass) users[idx].password=pass; DB.saveUsers(users); DB.setSession({email:email,name:name,role:users[idx].role}); toast('Profile updated'); renderAuthState(); renderDashboardPanel('profile'); });
+      }
+    }
+
+    function renderMessagesList(){
+      const el=$("#msgsList"); const msgs=DB.messages(); if(!msgs.length){ el.innerHTML='<div class="muted">No messages yet.</div>'; return; } el.innerHTML = msgs.slice(-5).reverse().map(m=>`<div style='padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.03);margin-bottom:8px'><b>${escapeHtml(m.name)}</b> <div class='muted' style='font-size:13px'>${escapeHtml(m.email)}</div><div style='margin-top:6px'>${escapeHtml(m.msg)}</div></div>`).join(''); }
+
+    function renderMessagesCount(){ $("#msgsStat").textContent = DB.messages().length }
+
+    /************* ITEMS CRUD *************/
+    function openEditModal(type,id){ const modal=$("#editModal"); $("#editType").value=type; $("#editId").value=id||''; if(id){ if(type==='service'){ const s=DB.services().find(x=>x.id===id); $("#editTitleInput").value=s.title; $("#editDescInput").value=s.desc; $("#editImgInput").value=''; } else { const p=DB.projects().find(x=>x.id===id); $("#editTitleInput").value=p.title; $("#editImgInput").value=p.img||''; $("#editDescInput").value=''; } } else { $("#editTitleInput").value=''; $("#editImgInput").value=''; $("#editDescInput").value=''; } modal.style.display='flex'; }
+
+    function deleteService(id){ if(!confirm('Delete this service?')) return; const sess=DB.session(); if(!sess || sess.role!=='admin'){toast('Admin only'); return;} const arr=DB.services().filter(x=>x.id!==id); DB.saveServices(arr); renderServices(); renderDashboardPanel('services'); renderItems(); toast('Service deleted'); }
+    function deleteProject(id){ if(!confirm('Delete this project?')) return; const sess=DB.session(); if(!sess || sess.role!=='admin'){toast('Admin only'); return;} const arr=DB.projects().filter(x=>x.id!==id); DB.saveProjects(arr); renderDashboardPanel('projects'); renderItems(); toast('Project deleted'); }
+
+    function deleteMessage(i){ const msgs=DB.messages(); msgs.splice(i,1); DB.saveMessages(msgs); renderMessagesCount(); toast('Message deleted'); }
+
+    /************* ITEM DETAILS & VIEW *************/
+    function openItem(type,id){ const modal=$("#itemModal"); const titleEl=$("#itemTitle"); const bodyEl=$("#itemBody"); if(type==='service'){ const s=DB.services().find(x=>x.id===id); titleEl.textContent = s.title; bodyEl.innerHTML = `<div class='muted'>${escapeHtml(s.desc)}</div><div style='margin-top:8px' class='muted'>Views: <b>${s.views||0}</b></div>`; } else { const p=DB.projects().find(x=>x.id===id); titleEl.textContent=p.title; bodyEl.innerHTML=`<img src='${escapeHtml(p.img)}' style='width:100%;border-radius:8px;object-fit:cover;margin-bottom:8px' /><div class='muted'>Views: <b>${p.views||0}</b></div>`; } modal.style.display='flex'; trackItemView(type,id); }
+
+    /************* CONTACT FORM (mailto fallback) *************/
+    document.getElementById('contactForm').addEventListener('submit',function(e){ e.preventDefault(); const name=$("#contactName").value.trim(); const email=$("#contactEmail").value.trim(); const msg=$("#contactMsg").value.trim(); if(!name||!email||!msg){ toast('Please fill all fields and message.'); return; } if(!validEmail(email)){ toast('Enter a valid email'); return; }
+      // Save message locally
+      const messages=DB.messages(); messages.push({name,email,msg,ts:Date.now()}); DB.saveMessages(messages); renderMessagesCount(); renderDashboardPanel('overview'); toast('Message saved locally');
+      // Attempt to open mail client to send to agency email (cannot auto-send without server)
+      const agency='sumitkumarprasad57@gmail.com'; const subject=encodeURIComponent('Contact from '+name); const body=encodeURIComponent(['Name: '+name, 'Email: '+email, '', msg].join('%0A'));
+      // Open mailto to prefill email (user must send from their client)
+      window.location.href = 'mailto:'+agency+'?subject='+subject+'&body='+body;
+    });
+
+    /************* AUTH MODAL & FLOW *************/
+    // show/hide auth modal
+    $('#btnLogin').addEventListener('click',()=>{ $('#authModal').style.display='flex'; showAuth('login'); });
+    $('#closeAuth').addEventListener('click',()=>$('#authModal').style.display='none');
+    $('#showLogin').addEventListener('click', ()=>showAuth('login'));
+    $('#showRegister').addEventListener('click',()=>showAuth('register'));
+
+    function showAuth(mode){ if(mode==='login'){ $('#loginForm').classList.remove('hidden'); $('#registerForm').classList.add('hidden'); } else { $('#loginForm').classList.add('hidden'); $('#registerForm').classList.remove('hidden'); } }
+
+    $('#loginForm').addEventListener('submit',function(e){ e.preventDefault(); const email=$('#loginEmail').value.trim(); const pass=$('#loginPass').value; if(!email||!pass){ $('#loginStatus').textContent='Enter credentials'; return; } const u=login(email,pass); if(!u){ $('#loginStatus').textContent='Invalid credentials'; return; } $('#authModal').style.display='none'; $('#loginStatus').textContent=''; renderAuthState(); toast('Logged in'); renderDashboardPanel('overview'); });
+
+    $('#registerForm').addEventListener('submit',function(e){ e.preventDefault(); try{ const u=register({name:$('#regName').value.trim(), email:$('#regEmail').value.trim(), phone:$('#regPhone').value.trim(), password:$('#regPass').value}); toast('Account created. You can now login.'); showAuth('login'); }catch(err){ toast(err.message); } });
+
+    $('#btnLogout').addEventListener('click',()=>{ logout(); document.getElementById('dashboard').style.display='none'; });
+
+    function renderAuthState(){ const s=DB.session(); if(s){ $('#btnLogin').textContent='Account: '+(s.name||s.email); $('#btnGetStarted').textContent='Open Dashboard'; } else { $('#btnLogin').textContent='Login'; $('#btnGetStarted').textContent='Get Started'; } }
+
+    // Get Started behavior
+    $('#btnGetStarted').addEventListener('click',()=>{ if(!DB.session()){ $('#authModal').style.display='flex'; showAuth('login'); } else { document.getElementById('dashboard').style.display='block'; document.getElementById('dashboard').scrollIntoView({behavior:'smooth'}); renderDashboardPanel('overview'); } });
+
+    /************* EDIT FORM SUBMIT *************/
+    $('#editForm').addEventListener('submit',function(e){ e.preventDefault(); const type=$('#editType').value; const id=$('#editId').value; const title=$('#editTitleInput').value.trim(); const img=$('#editImgInput').value.trim(); const desc=$('#editDescInput').value.trim(); const sess=DB.session(); if(!sess || sess.role!=='admin'){ toast('Admin only'); $('#editModal').style.display='none'; return; } if(type==='service'){ if(id){ const arr=DB.services(); const idx=arr.findIndex(x=>x.id===id); arr[idx].title=title; arr[idx].desc=desc; DB.saveServices(arr); } else { const arr=DB.services(); arr.push({id:crypto.randomUUID(),title,desc,views:0,unique:[]}); DB.saveServices(arr); } } else { if(id){ const arr=DB.projects(); const idx=arr.findIndex(x=>x.id===id); arr[idx].title=title; arr[idx].img=img; DB.saveProjects(arr); } else { const arr=DB.projects(); arr.push({id:crypto.randomUUID(),title,img,views:0,unique:[]}); DB.saveProjects(arr); } } $('#editModal').style.display='none'; renderServices(); renderItems(); renderDashboardPanel(type==='service'?'services':'projects'); toast('Saved'); });
+
+    // close modal by data-close
+    $all('[data-close]').forEach(b=>b.addEventListener('click',()=>{ $('#'+b.dataset.close).style.display='none' }));
+
+    /************* CHARTS *************/
+    let insChart=null; let miniChart=null;
+    function updateCharts(){ const ins=DB.insights(); const labels=ins.daily.map(d=>d.date.slice(5)); const data=ins.daily.map(d=>d.count); // update main insights chart
+      const ctx=$("#insChart"); if(!insChart){ insChart=new Chart(ctx,{type:'bar',data:{labels, datasets:[{label:'Views',data,backgroundColor:createGradient(ctx),borderRadius:6}]}, options:{responsive:true,plugins:{legend:{display:false},tooltip:{mode:'index'}}}}); } else { insChart.data.labels=labels; insChart.data.datasets[0].data=data; insChart.update(); }
+      // mini chart
+      const mctx=$("#miniChart"); if(!miniChart){ miniChart=new Chart(mctx,{type:'line',data:{labels, datasets:[{label:'Last 7 days',data,fill:true,tension:0.35,borderColor:'rgba(108,99,255,0.9)',backgroundColor:gradientLine(mctx)}]},options:{responsive:true,plugins:{legend:{display:false}}}}); } else { miniChart.data.datasets[0].data=data; miniChart.data.labels=labels; miniChart.update(); }
+    }
+    function createGradient(canvas){ const ctx=canvas.getContext('2d'); const g=ctx.createLinearGradient(0,0,0,200); g.addColorStop(0,'rgba(108,99,255,0.9)'); g.addColorStop(1,'rgba(0,194,168,0.15)'); return g; }
+    function gradientLine(canvas){ const ctx=canvas.getContext('2d'); const g=ctx.createLinearGradient(0,0,0,200); g.addColorStop(0,'rgba(108,99,255,0.25)'); g.addColorStop(1,'rgba(0,194,168,0.02)'); return g; }
+
+    /************* HELPERS *************/
+    function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+
+    /************* MISC ACTION BINDINGS *************/
+    // nav scroll
+    $all('[data-scroll]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); const id=a.getAttribute('href').slice(1); document.getElementById(id).scrollIntoView({behavior:'smooth'}); }));
+    $('#btnExplore').addEventListener('click',()=>document.getElementById('services').scrollIntoView({behavior:'smooth'}));
+    $('#btnContact').addEventListener('click',()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}));
+
+    // Insights filter change
+    $('#insFilter').addEventListener('change',()=>{ // for demo, same chart; could implement filtered chart
+      // If user wants per-type charts, additional aggregation would be done here.
+      updateCharts();
+    });
+
+    // dashboard menu
+    $('#dashOverview').addEventListener('click',()=>renderDashboardPanel('overview'));
+    $('#dashServices').addEventListener('click',()=>renderDashboardPanel('services'));
+    $('#dashProjects').addEventListener('click',()=>renderDashboardPanel('projects'));
+    $('#dashMsgs').addEventListener('click',()=>renderDashboardPanel('msgs'));
+    $('#dashProfile').addEventListener('click',()=>renderDashboardPanel('profile'));
+
+    /************* INIT *************/
+    function init(){ seed(); renderServices(); renderItems(); renderStats(); renderAuthState(); // show dashboard if session exists
+      if(DB.session()) document.getElementById('dashboard').style.display='block';
+      // close modals on outside click
+      $all('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+      // initial chart
+      updateCharts();
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  <footer class="container"><div class="muted">Demo CloudEdge Agency — client-side demo. For automatic email sending, integrate EmailJS or a server-side SMTP.</div></footer>
+</body>
+</html>
